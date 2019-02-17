@@ -1,6 +1,6 @@
 # DNN
 
-** Windows version **
+# Windows version (Visual studio2015)
 
 ## 事前作業
 * CUDAのインストール
