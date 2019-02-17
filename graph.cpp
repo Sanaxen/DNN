@@ -26,10 +26,10 @@ vector<Variable *> Graph::getParams() {
 }
 
 PVariable Graph::forward(PVariable input) {
-
+	return 0;
 }
 PVariable Graph::forward(PVariable x, PVariable t) {
-
+	return 0;
 }
 
 void Graph::zero_grads() {}
@@ -113,7 +113,9 @@ void Linear::fromHostArray(){
 
 }
 
-PVariable Linear::forward(PVariable x, PVariable t){}
+PVariable Linear::forward(PVariable x, PVariable t){
+	return 0;
+}
 
 
 // SparseLinear ------------------------------------------
@@ -190,7 +192,9 @@ void SparseLinear::fromHostArray(){
 
 }
 
-PVariable SparseLinear::forward(PVariable x, PVariable t){}
+PVariable SparseLinear::forward(PVariable x, PVariable t){
+	return 0;
+}
 
 
 Sigmoid::Sigmoid() : Graph() {

@@ -43,6 +43,7 @@ void Optimizer::delOpts(){
 
 OptimizerParams *Optimizer::createOptimizerParams(Variable *v){
     cout << "createOptimizerParams base" << endl;
+	return 0;
 }
 
 

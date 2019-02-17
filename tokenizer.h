@@ -6,7 +6,11 @@
 #ifndef TOKENIZER_H_
 #define TOKENIZER_H_
 
+#include "cuMat_config.h"
+
+#ifdef USE_MECAB
 #include <mecab.h>
+#endif
 #include <string>
 
 std::vector<std::string> split(const std::string &str, char sep)
@@ -25,7 +29,7 @@ std::vector<std::string> split(const std::string &str, char sep)
     return v;
 }
 
-
+#ifdef USE_MECAB
 class Tokenizer {
 private:
     MeCab::Tagger *tagger;
@@ -62,7 +66,7 @@ public:
     }
 };
 
-
+#endif
 
 
 #endif /* TOKENIZER_H_ */

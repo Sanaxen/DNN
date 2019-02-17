@@ -31,10 +31,10 @@ void asMatrix(PVariable x1, float *X){
 float getAccurecy(Graph *g_softmax, PVariable h, PVariable d, int batchSize){
     PVariable y = ((Softmax *)g_softmax)->forward(h);
 
-    int maxIdx_z3[batchSize];
+    int* maxIdx_z3 = new int[batchSize];
     y->data.maxRowIndex(maxIdx_z3);
 
-    int maxIdx_d[batchSize];
+    int* maxIdx_d = new int[batchSize];
     d->data.maxRowIndex(maxIdx_d);
 
     int hit = 0;
@@ -42,11 +42,20 @@ float getAccurecy(Graph *g_softmax, PVariable h, PVariable d, int batchSize){
         if (maxIdx_d[i] == maxIdx_z3[i]) hit++;
     }
     float accurecy = ((float)hit) / ((float) batchSize);
-    return accurecy;
+	delete[] maxIdx_z3;
+	delete[] maxIdx_d;
+	return accurecy;
 }
 
 int main(){
-
+	int deviceCount;
+	cudaGetDeviceCount(&deviceCount);
+	int device;
+	for (device = 0; device < deviceCount; ++device) {
+		cudaDeviceProp deviceProp;
+		cudaGetDeviceProperties(&deviceProp, device);
+		printf("Device %d has compute capability %d.%d.\n", device, deviceProp.major, deviceProp.minor);
+	}
 
     int epochNums = 30;
     int epochAENums = 20;
@@ -145,15 +154,16 @@ int main(){
             // update -------------------------------------------
             optimizer.update();
 
-            model.unchain();
+			accurecy += getAccurecy(model.G("g_softmax"), h3, d, batchSize);
+			model.unchain();
         }
 
 
         end = std::chrono::system_clock::now();
         int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count();
-        float loss_mean = sum_loss/((float)totalSampleSize/batchSize);
-        float accurecy_mean = accurecy/((float)totalSampleSize/batchSize);
-        cout << "epoch:" << k+1 << " loss:" << loss_mean << " accurecy:" << setprecision(3) << accurecy_mean*100 << "% time:" << elapsed << "ms" << endl;
+        float loss_mean = sum_loss/((float)totalSampleSize/ (float)batchSize);
+        float accurecy_mean = accurecy/((float)totalSampleSize/ (float)batchSize);
+        cout << "epoch:" << k+1 << " loss:" << loss_mean << " accurecy:" << setprecision(3) << accurecy_mean*100.0 << "% time:" << elapsed << "ms" << endl;
     }
 
 

@@ -1,5 +1,7 @@
 # DNN
 
+** Windows version **
+
 ## 事前作業
 * CUDAのインストール
 * MeCabのインストール

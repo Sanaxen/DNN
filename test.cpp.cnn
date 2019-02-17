@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <chrono>
 
-#include "png.h"
+//#include "png.h"
 
 
 #include "graph.h"
@@ -34,10 +34,10 @@ void asMatrix(PVariable x1, float *X){
 float getAccurecy(Graph *g_softmax, PVariable h, PVariable d, int batchSize){
     PVariable y = ((Softmax *)g_softmax)->forward(h);
 
-    int maxIdx_z3[batchSize];
+    int* maxIdx_z3 = new int[batchSize];
     y->data.maxRowIndex(maxIdx_z3);
 
-    int maxIdx_d[batchSize];
+    int* maxIdx_d = new int[batchSize];
     d->data.maxRowIndex(maxIdx_d);
 
     int hit = 0;
@@ -45,6 +45,9 @@ float getAccurecy(Graph *g_softmax, PVariable h, PVariable d, int batchSize){
         if (maxIdx_d[i] == maxIdx_z3[i]) hit++;
     }
     float accurecy = ((float)hit) / ((float) batchSize);
+	delete[] maxIdx_z3;
+	delete[] maxIdx_d;
+
     return accurecy;
 }
 

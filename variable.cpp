@@ -168,8 +168,9 @@ Variable::Variable(vector<float> &ids, int nums){
     creator = NULL;
 
     this->isGetGrad = false;
+#ifdef USE_CUSPARSE
     this->isSparse = true;
-
+#endif
 }
 
 
@@ -192,8 +193,9 @@ Variable &Variable::operator=(const Variable &a) {
 
 
     this->isGetGrad = a.isGetGrad;
-    this->isSparse = a.isSparse;
-
+#ifdef USE_CUSPARSE
+	this->isSparse = a.isSparse;
+#endif
     return *this;
 }
 

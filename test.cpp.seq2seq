@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <functional>
 
-#include <sys/resource.h>
+//#include <sys/resource.h>
 
 #include <sstream>
 
@@ -159,7 +159,7 @@ vector<PVariable> encoder(vector<vector<int>> &seqs_ids_ja, WordEmbed *wd_ja, in
 
     for (int j = 0; j < max_vocab_size_ja; j++) {
 
-        float data_ja[vocab_size * batch_size];
+        float* data_ja = new float[vocab_size * batch_size];
 
         int batch_idx = 0;
         for (int i = k * batch_size; i < k * batch_size + batch_size; i++) {
@@ -172,6 +172,7 @@ vector<PVariable> encoder(vector<vector<int>> &seqs_ids_ja, WordEmbed *wd_ja, in
             bool ignore = false;
             wd_ja->toOneHot(vocab_size, data_ja, word_ids[j], batch_idx, ignore);
             batch_idx++;
+
         }
 
         PVariable x(new Variable(vocab_size, batch_size, false));
@@ -182,7 +183,8 @@ vector<PVariable> encoder(vector<vector<int>> &seqs_ids_ja, WordEmbed *wd_ja, in
         PVariable h = model.G("lstm_ja")->forward(tanh_ja);
 
         src_hidden_states.push_back(h);
-    }
+		delete[] data_ja;
+	}
 
 
     //connect ENCODER and DECODER
@@ -211,7 +213,7 @@ vector<int> predict(vector<vector<int>> &seqs_ids_ja, vector<vector<int>> &seqs_
 
     PVariable loss_sum(new Variable(1, 1));
 
-    float data_en[vocab_size * batch_size];
+    float* data_en = new float[vocab_size * batch_size];
     PVariable t(new Variable(vocab_size, batch_size, false));
 
     for (int i = 0; i < batch_size; i++) {
@@ -237,7 +239,7 @@ vector<int> predict(vector<vector<int>> &seqs_ids_ja, vector<vector<int>> &seqs_
 
         PVariable softmax = model.G("softmax")->forward(in);
 
-        int maxIdx[batch_size]; //batch_size is 1
+        int* maxIdx = new int[batch_size]; //batch_size is 1
         softmax->data.maxRowIndex(maxIdx);
 
         if (maxIdx[0] == wd_en->EOS_ID){
@@ -252,8 +254,9 @@ vector<int> predict(vector<vector<int>> &seqs_ids_ja, vector<vector<int>> &seqs_
         toPVariable(t2, data_en);
 
         t = t2;
-
+		delete[] maxIdx;
     }
+	delete[] data_en;
 
     return predict_word_ids;
 }
@@ -272,7 +275,7 @@ PVariable forward_one_step(vector<vector<int>> &seqs_ids_ja, vector<vector<int>>
 
     PVariable loss_sum(new Variable(1, 1));
 
-    float data_en[vocab_size * batch_size];
+    float* data_en = new float[vocab_size * batch_size];
     PVariable t(new Variable(vocab_size, batch_size, false));
 
     for (int i = 0; i < batch_size; i++) {
@@ -321,6 +324,7 @@ PVariable forward_one_step(vector<vector<int>> &seqs_ids_ja, vector<vector<int>>
 
     *loss_val /= max_vocab_size_en;
 
+	delete[] data_en;
     return loss_sum;
 }
 

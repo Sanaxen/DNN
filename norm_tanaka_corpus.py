@@ -2,10 +2,10 @@
 
 import re
 
-f = open('examples.utf', 'r')
+f = open('examples.utf', 'r',encoding="utf-8_sig")
 
-f_j = open('tanaka_corpus_j.txt', 'w')
-f_e = open('tanaka_corpus_e.txt', 'w')
+f_j = open('tanaka_corpus_j.txt', 'w',encoding="utf-8_sig")
+f_e = open('tanaka_corpus_e.txt', 'w',encoding="utf-8_sig")
 
 cnt = 0
 for row in f:

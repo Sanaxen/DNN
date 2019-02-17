@@ -3,8 +3,8 @@
 import random
 
 
-f_j = open('tanaka_corpus_j.txt', 'r')
-f_e = open('tanaka_corpus_e.txt', 'r')
+f_j = open('tanaka_corpus_j.txt', 'r',encoding="utf-8_sig")
+f_e = open('tanaka_corpus_e.txt', 'r',encoding="utf-8_sig")
 
 js = []
 es = []
@@ -16,8 +16,8 @@ size_e = len(es)
 
 index = random.sample(range(size_e), 10000)
 
-f_j_w = open('tanaka_corpus_j_10000.txt', 'w')
-f_e_w = open('tanaka_corpus_e_10000.txt', 'w')
+f_j_w = open('tanaka_corpus_j_10000.txt', 'w',encoding="utf-8_sig")
+f_e_w = open('tanaka_corpus_e_10000.txt', 'w',encoding="utf-8_sig")
 
 for i in index:
     hj = js[i]

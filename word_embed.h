@@ -16,16 +16,18 @@
 using namespace std;
 
 typedef pair<string, int> ass_arr;
-bool sort_less(const ass_arr& left,const ass_arr& right){
+inline bool sort_less(const ass_arr& left,const ass_arr& right){
     return left.second < right.second;
 }
-bool sort_greater(const ass_arr& left,const ass_arr& right){
+inline bool sort_greater(const ass_arr& left,const ass_arr& right){
     return left.second > right.second;
 }
 
 class WordEmbed {
 
+#ifdef USE_MECAB
     Tokenizer token;
+#endif
 
     vector<vector<string>> sequences;
     vector<vector<int>> sequences_ids;
@@ -89,10 +91,11 @@ public:
     }
 
 
-    void addSentences(vector<string> seqs, bool tokenize, bool addEOS){
+	void addSentences(vector<string> seqs, bool tokenize, bool addEOS)
+	{
         for (auto s : seqs){
-            add(s, tokenize, addEOS);
-        }
+			add(s, tokenize, addEOS);
+		}
 
         vector<pair<string, int> > pairs(words_count.size());
 
@@ -129,14 +132,19 @@ public:
 
     }
 
-    void add(string sentence, bool tokenize, bool addEOS){
-
-        if (sentence == "") return;
+	void add(string sentence, bool tokenize, bool addEOS)
+	{
+		if (sentence == "") return;
 
 
         vector<string> words, words_final;
-        if (tokenize) words = token.parse(sentence);
-        else words = split(sentence, ' ');
+#ifdef USE_MECAB
+		if (tokenize) words = token.parse(sentence);
+		else 
+		words = split(sentence, ' ');
+#else
+		words = split(sentence, ' ');
+#endif
 
         if (addEOS) words.push_back("<eos>");
 
